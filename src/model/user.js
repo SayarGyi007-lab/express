@@ -44,17 +44,17 @@ const userSchema = new Schema({
 },{timestamps: true})
 
 userSchema.pre("save", async function(next){
-    
+    console.log("PRE SAVE HOOK TRIGGERED");
     if(!this.isModified("password")) return next()
    this.password = await bcrypt.hash(this.password,10)
    next()
 })
 
-userSchema.methods.isPasswordMatch = async function(){
+userSchema.methods.isPasswordMatch = async function(password){
     return await bcrypt.compare(password,this.password)
 }
 
-userSchema.methods.generate_Aceesss_Token = async function(){
+userSchema.methods.generateAceesssToken = async function(){
     return jwt.sign({
      _id: this._id,
      email: this.email,
@@ -64,7 +64,7 @@ userSchema.methods.generate_Aceesss_Token = async function(){
     {expiresIn:process.env.ACCESS_TOKEN_KEY_EXP})
 }
 
-userSchema.methods.generate_Refresh_Token = async function(){
+userSchema.methods.generateRefreshToken = async function(){
     return jwt.sign({
      _id: this._id,
     },

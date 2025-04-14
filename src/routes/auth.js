@@ -1,15 +1,23 @@
 import { Router } from "express";
-import { register } from "../controller/auth.js";
+import { changeEmailController, changePasswordController, changeUsernameController, generateNewRefreshToken, loginController, logoutController, register } from "../controller/auth.js";
 import {upload} from "../middleware/multer.js";
+import { verifyJWT } from "../middleware/auth.js";
 
 
-const registeration = Router();
+const router = Router();
 
-registeration.post("/register",
+router.post("/register",
     upload.fields([
        { name: "profile_photo", maxCount:1},
        {name: "cover_photo", maxCount:1}
     ])
     ,register)
 
-export default registeration;
+router.post("/login",loginController)
+router.post("/refresh",generateNewRefreshToken)
+router.post("/logout",verifyJWT,logoutController)
+router.put("/updateusername/:id",changeUsernameController)
+router.put("/updateEmail/:id",changeEmailController)
+router.put("/updatePassword/:id",changePasswordController)
+
+export default router;
